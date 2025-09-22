@@ -84,7 +84,7 @@
 <img width="1490" height="1107" alt="Image" src="https://github.com/user-attachments/assets/d8c88dc0-178c-423c-99ed-afa4a7a1d83b" />
 
 ## Fast RCNN
-<img width="3150" height="3150" alt="Image" src="https://github.com/user-attachments/assets/26a62693-f5d3-4680-980d-16c166095b84" />
+<img width="1490" height="1107" alt="Image" src="https://github.com/user-attachments/assets/2db79a43-c067-4a9e-a372-44d52e5a919f" />
 
 
 ### 모델별 동영상 예측 결과 비교
