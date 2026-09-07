@@ -116,6 +116,42 @@
 
 ---
 
+## 코드 구성
+
+```text
+.
+├── models/                    # fast_scnn.py, fast_scnn2.py
+├── data_loader/                # fire_dataset.py — Roboflow 화재 세그멘테이션 데이터셋 로더
+├── utils/                      # loss, lr_scheduler, metric(mIoU), visualize
+├── train.py / eval.py / demo.py   # Fast-SCNN 학습/평가/추론 (Poudel et al. 구현체 기반, 화재 데이터셋용으로 수정)
+├── train_eval_fast_scnn.py     # Fast-SCNN 학습 및 평가 노트북(정리본)
+├── train_eval_mask_rcnn.py     # torchvision Mask R-CNN(ResNet50-FPN) 학습 및 평가 노트북(정리본)
+└── experiment_deeplabv3.py     # DeepLabv3 비교 실험(참고용, 최종 결과표에는 미포함)
+```
+
+YOLOv8-Seg는 Ultralytics CLI(`yolo segment train ...`)로 별도 학습했으며, 위 표의 성능/FPS 수치에 사용된 가중치입니다.
+
+## 실행 방법 (참고용)
+
+원본 화재 CCTV/차량 영상과 학습 가중치는 용량 및 출처 문제로 포함하지 않았습니다. 아래는 재현을 위한 최소 절차입니다.
+
+```bash
+pip install -r requirements.txt
+
+# Fast-SCNN 학습/평가
+python train_eval_fast_scnn.py
+
+# Mask R-CNN 학습/평가
+python train_eval_mask_rcnn.py
+
+# YOLOv8-Seg (Ultralytics)
+yolo segment train data=fire_seg.yaml model=yolov8n-seg.pt epochs=50
+```
+
+`data_loader/fire_dataset.py`는 Roboflow에서 내려받은 `Images/`, `Masks/` 폴더 구조를 기준으로 작성되어 있어, 동일한 디렉터리 구조로 데이터를 배치하면 그대로 사용할 수 있습니다.
+
+---
+
 ## 향후 개선 (Future Work)
 
 * **Fast-SCNN 성능 개선:** 지식 증류(Knowledge Distillation) 등 최신 기법 적용.
