@@ -18,7 +18,7 @@
 
 ---
 
-##  사용된 모델
+## 사용된 모델
 
 본 연구에서는 각기 다른 접근 방식을 대표하는 세 가지 모델을 선정하여 다각적인 비교를 수행함
 
@@ -55,7 +55,7 @@
 
 ### 1. 정량적 성능 비교
 
-각 모델을 50 에포크(Epoch) 동안 학습시킨 후, 테스트 데이터셋으로 성능을 측정함
+각 모델을 학습시킨 후, 테스트 데이터셋으로 성능을 측정함
 
 | 평가지표          | YOLOv8 | Fast-SCNN | Mask R-CNN |
 | ------------- | ------ | --------- | ---------- |
@@ -76,25 +76,21 @@
 | YOLOv8     | 91.30  |
 | Mask R-CNN | 3.29   |
 
-# 테스트 이미지 모델별 Mask 예측 
+## 테스트 이미지 모델별 Mask 예측
 
-### YOLO 
-<img width="1490" height="1107" alt="Image" src="https://github.com/user-attachments/assets/101cfbd3-aadd-4c37-a778-e1c21f100a6c" />
+각 모델을 서로 다른 화재 영상(차량 화재 / 장갑차 화재)에 적용한 프레임 예시입니다.
+
+### YOLO
+![YOLOv8-Seg 예측 결과](assets/predictions/yolo_predicted.png)
 
 ### Mask R-CNN
-<img width="1490" height="1107" alt="Image" src="https://github.com/user-attachments/assets/d8c88dc0-178c-423c-99ed-afa4a7a1d83b" />
+![Mask R-CNN 예측 결과](assets/predictions/mask_rcnn_predicted.png)
 
-## Fast RCNN
-<img width="1490" height="1107" alt="Image" src="https://github.com/user-attachments/assets/2db79a43-c067-4a9e-a372-44d52e5a919f" />
+### Fast-SCNN
+![Fast-SCNN 예측 결과](assets/predictions/fast_scnn_predicted.png)
 
-
-### 모델별 동영상 예측 결과 비교
-
-<img width="881" height="307" alt="Image" src="https://github.com/user-attachments/assets/51692025-aec1-42e0-a37d-13be6981cef3" />
 
 ---
-
-#
 
 ## 결론 및 분석
 
@@ -145,7 +141,7 @@ python train_eval_fast_scnn.py
 python train_eval_mask_rcnn.py
 
 # YOLOv8-Seg (Ultralytics)
-yolo segment train data=fire_seg.yaml model=yolov8n-seg.pt epochs=50
+yolo segment train data=fire_seg.yaml model=yolov8n-seg.pt
 ```
 
 `data_loader/fire_dataset.py`는 Roboflow에서 내려받은 `Images/`, `Masks/` 폴더 구조를 기준으로 작성되어 있어, 동일한 디렉터리 구조로 데이터를 배치하면 그대로 사용할 수 있습니다.
