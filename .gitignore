@@ -4,6 +4,8 @@ weights/
 *.pth
 *.pt
 *.ckpt
+# small, retrained checkpoint kept for reproducibility
+!fast_scnn_fire.pth
 
 # Video results
 *.mp4
