@@ -98,19 +98,22 @@
 
 절대값은 하드웨어 차이로 다르지만, **Fast-SCNN > YOLOv8 > Mask R-CNN 순의 상대적 속도 순위는 재측정에서도 동일하게 유지**됩니다.
 
-## 테스트 이미지 모델별 Mask 예측
+## 테스트 이미지 모델별 Ground Truth vs Prediction 비교
 
-세 모델 모두 이 저장소 정리 시점에 각자의 가중치로 **직접 재실행**해서 얻은 결과입니다(캡처 재활용 아님). YOLO와 Fast-SCNN은 동일한 화재 영상(`화재2.mp4`)에서, Mask R-CNN은 자체 검증 데이터셋에서 추출했습니다 — Mask R-CNN은 이 영상에서는 탐지에 실패해(학습 데이터와 장면이 달라 일반화가 안 됨) 원래 검증셋 이미지로 대체했습니다.
+정성적 결과를 예측 마스크만 보여주면 "이게 맞게 예측한 건지" 판단할 근거가 없어, 각 모델의 held-out 테스트셋에서 무작위로 뽑은 이미지에 대해 **원본 / 정답(Ground Truth) / 예측(Prediction)을 나란히** 배치했습니다(모두 이 저장소 정리 시점에 직접 재실행한 결과, 생성 코드는 `build_gt_comparison.py`).
 
-### YOLO
-![YOLOv8-Seg 예측 결과](assets/predictions/yolo_predicted.png)
+### YOLOv8-Seg
+![YOLOv8-Seg: Original / GT / Prediction](assets/predictions/yolo_predicted.png)
 
 ### Mask R-CNN
-![Mask R-CNN 예측 결과 (validation set)](assets/predictions/mask_rcnn_predicted.png)
+GT에 화재 영역이 2곳인데 예측은 1곳만 잡는 경우가 반복적으로 보입니다 — 재검증한 Recall 0.723과 일치하는 정직한 결과입니다.
+
+![Mask R-CNN: Original / GT / Prediction](assets/predictions/mask_rcnn_predicted.png)
 
 ### Fast-SCNN (재학습)
-![Fast-SCNN 예측 결과](assets/predictions/fast_scnn_predicted.png)
+가장 가벼운 모델답게 경계가 거칠고 일부 영역을 놓치는 경향이 있습니다 — 세 모델 중 가장 낮은 Precision(0.690)과 일치합니다.
 
+![Fast-SCNN: Original / GT / Prediction](assets/predictions/fast_scnn_predicted.png)
 
 ---
 
@@ -149,6 +152,7 @@
 ├── train_fastscnn_fire.py       # 실제 사용하는 학습 스크립트 — models/fast_scnn_fire.py 기반, fast_scnn_fire.pth 생성
 ├── fast_scnn_fire.pth           # 위 스크립트로 학습된 체크포인트 (299KB, 재현 가능)
 ├── eval_pixel_metrics.py        # 세 모델 공통 픽셀 단위 Precision/Recall/F1/IoU 평가 코드
+├── build_gt_comparison.py       # Original/GT/Prediction 비교 이미지 생성 코드
 ├── train_eval_fast_scnn.py      # Fast-SCNN 실험 노트북 원본(정리본) — 여러 아키텍처 실험 이력 포함
 ├── train_eval_mask_rcnn.py      # torchvision Mask R-CNN(ResNet50-FPN) 학습 및 평가 노트북(정리본)
 └── experiment_deeplabv3.py      # DeepLabv3 비교 실험(참고용, 최종 결과표에는 미포함)
