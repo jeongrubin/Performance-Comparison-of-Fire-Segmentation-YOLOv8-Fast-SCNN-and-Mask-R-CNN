@@ -1,0 +1,23 @@
+# Data and weights
+data/
+weights/
+*.pth
+*.pt
+*.ckpt
+# small, retrained checkpoint kept for reproducibility
+!fast_scnn_fire.pth
+
+# Video results
+*.mp4
+*.avi
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local environment
+.env
+.venv/
+venv/
+.DS_Store
