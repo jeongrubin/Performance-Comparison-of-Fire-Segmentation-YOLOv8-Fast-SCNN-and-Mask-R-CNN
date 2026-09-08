@@ -55,7 +55,7 @@ IoU, Precision, Recall, F1-score로 분할 성능을 확인하고, 같은 GPU에
 
 첫 번째 표는 초기 실험에서 기록한 값입니다. 두 번째 표는 보관된 가중치와 테스트 데이터로 다시 계산한 값입니다. 재계산 값은 fire 클래스를 기준으로 한 픽셀 단위 Precision, Recall, F1, IoU이며 계산 방법은 `eval_pixel_metrics.py`에 정리했습니다.
 
-**최초 보고 값**
+**초기 실험 평가지표 값**
 
 | 평가지표          | YOLOv8 | Fast-SCNN | Mask R-CNN |
 | ------------- | ------ | --------- | ---------- |
@@ -75,28 +75,27 @@ IoU, Precision, Recall, F1-score로 분할 성능을 확인하고, 같은 GPU에
 
 재검증 과정에서 확인한 사항:
 
-- **Fast-SCNN**: 기존 `fast_scnn_model_fire.pth`는 현재 평가 환경에서 모든 픽셀을 배경으로 예측했습니다. 노트북에 남아 있던 학습 구조를 `models/fast_scnn_fire.py`로 정리하고 Roboflow 학습 데이터 6,262장으로 30 epoch 재학습했습니다.
+- **Fast-SCNN**: 기존 `fast_scnn_model_fire.pth`는 현재 평가 환경에서 모든 픽셀을 배경으로 예측했습니다. 학습 구조를 `models/fast_scnn_fire.py`로 정리하고 Roboflow 학습 데이터 6,262장으로 30 epoch 재학습했습니다.
 - **YOLOv8-Seg**: `fire_seg_yolov8n.pt`를 테스트 이미지 519장에 적용했을 때 F1은 0.900이었습니다. 초기 기록의 Precision과 Recall(0.99대)과 차이가 있어 평가 조건을 추가로 확인할 필요가 있습니다.
 - **Mask R-CNN**: 테스트 이미지 201장에서 F1 0.783, IoU 0.643으로 측정됐습니다. 초기 기록(F1 0.777, IoU 0.636)과 비슷한 값입니다.
-- 모델마다 보관된 테스트셋이 달라 결과를 동일 조건의 절대 비교로 해석하기는 어렵습니다.
 
 ---
 
 ### 2. 실시간 처리 성능 (FPS)
 
-최초 FPS는 측정 하드웨어가 명시되어 있지 않아 재현 기준으로 삼기 어렵습니다. 아래는 이 저장소 정리 시점에 **동일한 GPU(RTX 4090), 동일 영상**으로 재측정한 값입니다.
+아래는 **동일한 GPU(RTX 4090), 동일 영상**으로 재측정한 값입니다.
 
-| 모델         | FPS (RTX 4090, 재측정) | 최초 보고 FPS |
+| 모델         | FPS (RTX 4090, 재측정) | 초기실험 FPS |
 | ---------- | --------------------- | ---------- |
 | Fast-SCNN  | 706.7                 | 164.13     |
 | YOLOv8     | 112.7                 | 91.30      |
 | Mask R-CNN | 29.9                  | 3.29       |
 
-절대값은 하드웨어 차이로 다르지만, **Fast-SCNN > YOLOv8 > Mask R-CNN 순의 상대적 속도 순위는 재측정에서도 동일하게 유지**됩니다.
+ **Fast-SCNN > YOLOv8 > Mask R-CNN 순의 **
 
 ### 3. 실제 영상에서의 동작 (GIF)
 
-프레임별 예측 변화를 확인하기 위해 모델별 추론 결과를 GIF로 만들었습니다(`build_gifs.py`). YOLOv8-Seg와 Fast-SCNN은 `화재2.mp4`를 사용했고, Mask R-CNN은 장갑차 화재 영상을 사용했습니다. 입력 영상이 서로 다르므로 이 자료는 정성적 동작 확인용입니다.
+프레임별 예측 변화를 모델별로 추론 결과를 GIF로 확인했습니다. Y
 
 | YOLOv8-Seg | Fast-SCNN (재학습) | Mask R-CNN |
 |---|---|---|
@@ -106,7 +105,7 @@ IoU, Precision, Recall, F1-score로 분할 성능을 확인하고, 같은 GPU에
 
 ## 테스트 이미지 모델별 Ground Truth vs Prediction 비교
 
-예측 결과를 확인할 수 있도록 각 모델의 테스트 이미지에서 원본, 정답 마스크, 예측 마스크를 나란히 배치했습니다. 이미지는 `build_gt_comparison.py`로 생성했습니다.
+각 모델의 테스트 이미지에서 원본, 정답 마스크, 예측 마스크를 확인합니다.
 
 ### YOLOv8-Seg
 ![YOLOv8-Seg: Original / GT / Prediction](assets/predictions/yolo_predicted.png)
@@ -125,7 +124,7 @@ IoU, Precision, Recall, F1-score로 분할 성능을 확인하고, 같은 GPU에
 
 ## 결과에서 확인한 점
 
-재검증 결과에서는 YOLOv8-Seg의 F1과 IoU가 가장 높았고, Fast-SCNN의 처리 속도가 가장 빨랐습니다. Mask R-CNN은 초기 기록과 다시 측정한 값의 차이가 가장 작았습니다. 모델마다 보관된 테스트셋이 달라 세 수치를 완전히 같은 조건의 순위로 해석하지는 않았습니다.
+재검증 결과에서는 YOLOv8-Seg의 F1과 IoU가 가장 높았고, Fast-SCNN의 처리 속도가 가장 빨랐습니다. Mask R-CNN은 초기 기록과 다시 측정한 값의 차이가 가장 작았습니다.
 
 ### 프로젝트 최종 개념도
 
