@@ -8,11 +8,9 @@
 
 ---
 
-## 주요 목표
+## 비교한 내용
 
-* IoU, Precision, Recall, F1-score를 이용한 분할 성능 비교
-* 같은 GPU에서 측정한 FPS를 이용한 처리 속도 비교
-* 원본·정답·예측 이미지와 영상 결과를 이용한 오류 사례 확인
+IoU, Precision, Recall, F1-score로 분할 성능을 확인하고, 같은 GPU에서 FPS를 측정했습니다. 수치만으로 확인하기 어려운 오류는 원본·정답·예측 이미지를 나란히 놓고 살펴봤습니다.
 
 ---
 
@@ -125,21 +123,9 @@
 
 ---
 
-## 결론 및 분석
+## 결과에서 확인한 점
 
-재검증 수치(픽셀 단위 F1/IoU, FPS는 RTX 4090 재측정) 기준으로 정리하면:
-
-* **YOLOv8-Seg**
-
-  * F1 0.900, IoU 0.818로 가장 높은 분할 성능을 보였고, 처리 속도는 112.7 FPS였습니다.
-
-* **Fast-SCNN**
-
-  * 706.7 FPS로 세 모델 중 처리 속도가 가장 높았습니다. F1은 0.778로, 속도를 높이는 대신 분할 성능이 낮아지는 경향을 확인했습니다.
-
-* **Mask R-CNN**
-
-  * 처리 속도는 29.9 FPS, F1은 0.783이었습니다. 초기 기록과 재검증 값의 차이는 세 모델 중 가장 작았습니다.
+재검증 결과에서는 YOLOv8-Seg의 F1과 IoU가 가장 높았고, Fast-SCNN의 처리 속도가 가장 빨랐습니다. Mask R-CNN은 초기 기록과 다시 측정한 값의 차이가 가장 작았습니다. 모델마다 보관된 테스트셋이 달라 세 수치를 완전히 같은 조건의 순위로 해석하지는 않았습니다.
 
 ### 프로젝트 최종 개념도
 
@@ -147,25 +133,13 @@
 
 ---
 
-## 코드 구성
+## 주요 파일
 
-```text
-.
-├── models/
-│   ├── fast_scnn_fire.py       # 실제 화재 체크포인트와 일치하는 아키텍처 (검증됨, fast_scnn_fire.pth 로드용)
-│   └── fast_scnn.py            # 원본 Fast-SCNN(Poudel et al.) 구현체 — upstream 참고용, 화재 체크포인트와는 무관
-├── data_loader/                 # fire_dataset.py — Roboflow 화재 세그멘테이션 데이터셋 로더
-├── utils/                       # loss, lr_scheduler, metric(mIoU), visualize
-├── train.py / eval.py / demo.py    # 원본 Fast-SCNN(Poudel et al.) 학습/평가/추론 스캐폴드
-├── train_fastscnn_fire.py       # 실제 사용하는 학습 스크립트 — models/fast_scnn_fire.py 기반, fast_scnn_fire.pth 생성
-├── fast_scnn_fire.pth           # 위 스크립트로 학습된 체크포인트 (299KB, 재현 가능)
-├── eval_pixel_metrics.py        # 세 모델 공통 픽셀 단위 Precision/Recall/F1/IoU 평가 코드
-├── build_gt_comparison.py       # Original/GT/Prediction 비교 이미지 생성 코드
-├── build_gifs.py                # 모델별 동작 데모 GIF 생성 코드
-├── train_eval_fast_scnn.py      # Fast-SCNN 실험 노트북 원본(정리본) — 여러 아키텍처 실험 이력 포함
-├── train_eval_mask_rcnn.py      # torchvision Mask R-CNN(ResNet50-FPN) 학습 및 평가 노트북(정리본)
-└── experiment_deeplabv3.py      # DeepLabv3 비교 실험(참고용, 최종 결과표에는 미포함)
-```
+- `train_fastscnn_fire.py`: Fast-SCNN 학습
+- `eval_pixel_metrics.py`: 모델별 픽셀 단위 지표 계산
+- `build_gt_comparison.py`: 원본·정답·예측 비교 이미지 생성
+- `build_gifs.py`: 영상 추론 결과 GIF 생성
+- `models/fast_scnn_fire.py`: 재학습에 사용한 Fast-SCNN 구조
 
 YOLOv8-Seg는 Ultralytics CLI(`yolo segment train ...`)로 별도 학습했습니다.
 
@@ -193,13 +167,9 @@ yolo segment train data=fire_seg.yaml model=yolov8n-seg.pt
 
 ---
 
-## 향후 개선
+## 남은 문제
 
-* **Fast-SCNN 성능 개선:** 현재 픽셀 F1 0.78 수준으로 세 모델 중 가장 낮음. 지식 증류(Knowledge Distillation) 등 최신 기법 적용.
-* **YOLOv8 평가 조건 확인:** 초기 기록(F1 0.99)과 재검증 값(F1 0.90)의 차이를 평가 코드와 confidence threshold를 기준으로 점검.
-* **데이터 분할 방식 점검:** Mask R-CNN 검증셋 일부가 연속 프레임으로 구성되어 있어, 학습/검증 분할이 프레임 단위가 아닌 영상(클립) 단위로 이루어졌는지 확인이 필요함.
-* **데이터 다양성 확보:** 야간, 실내, 연기 환경 등 다양한 데이터 확보.
-* **Transformer 기반 모델 탐색:** 최신 Vision Transformer 기반 세그멘테이션과 비교.
+초기 YOLOv8 기록과 재검증 값의 차이가 발생한 원인은 아직 특정하지 못했습니다. 다음 실험에서는 데이터 분할을 영상 단위로 고정하고, 세 모델을 같은 테스트셋에서 다시 평가할 계획입니다. 야간·연기 환경의 데이터도 추가로 필요합니다.
 
 ---
 
