@@ -98,6 +98,16 @@
 
 절대값은 하드웨어 차이로 다르지만, **Fast-SCNN > YOLOv8 > Mask R-CNN 순의 상대적 속도 순위는 재측정에서도 동일하게 유지**됩니다.
 
+### 3. 실제 영상에서의 동작 (GIF)
+
+정지 이미지보다 실제 영상에서 프레임마다 어떻게 반응하는지 보는 게 더 직관적이라, 세 모델을 각자 검증된 영상에 돌려 GIF로 만들었습니다(생성 코드는 `build_gifs.py`). YOLO·Fast-SCNN은 동일 영상(`화재2.mp4`), Mask R-CNN은 실제로 탐지가 되는 영상(장갑차 화재)을 사용했습니다.
+
+| YOLOv8-Seg | Fast-SCNN (재학습) | Mask R-CNN |
+|---|---|---|
+| ![YOLO demo](assets/demo/yolo_demo.gif) | ![Fast-SCNN demo](assets/demo/fastscnn_demo.gif) | ![Mask R-CNN demo](assets/demo/maskrcnn_demo.gif) |
+
+---
+
 ## 테스트 이미지 모델별 Ground Truth vs Prediction 비교
 
 정성적 결과를 예측 마스크만 보여주면 "이게 맞게 예측한 건지" 판단할 근거가 없어, 각 모델의 held-out 테스트셋에서 무작위로 뽑은 이미지에 대해 **원본 / 정답(Ground Truth) / 예측(Prediction)을 나란히** 배치했습니다(모두 이 저장소 정리 시점에 직접 재실행한 결과, 생성 코드는 `build_gt_comparison.py`).
@@ -153,6 +163,7 @@ GT에 화재 영역이 2곳인데 예측은 1곳만 잡는 경우가 반복적�
 ├── fast_scnn_fire.pth           # 위 스크립트로 학습된 체크포인트 (299KB, 재현 가능)
 ├── eval_pixel_metrics.py        # 세 모델 공통 픽셀 단위 Precision/Recall/F1/IoU 평가 코드
 ├── build_gt_comparison.py       # Original/GT/Prediction 비교 이미지 생성 코드
+├── build_gifs.py                # 모델별 동작 데모 GIF 생성 코드
 ├── train_eval_fast_scnn.py      # Fast-SCNN 실험 노트북 원본(정리본) — 여러 아키텍처 실험 이력 포함
 ├── train_eval_mask_rcnn.py      # torchvision Mask R-CNN(ResNet50-FPN) 학습 및 평가 노트북(정리본)
 └── experiment_deeplabv3.py      # DeepLabv3 비교 실험(참고용, 최종 결과표에는 미포함)
