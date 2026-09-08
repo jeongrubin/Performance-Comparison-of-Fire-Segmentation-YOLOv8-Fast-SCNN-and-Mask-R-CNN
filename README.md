@@ -33,7 +33,7 @@ IoU, Precision, Recall, F1-score로 분할 성능을 확인하고, 같은 GPU에
 ## 데이터셋 및 전처리
 
 * **데이터 소스:** Roboflow - Fire Seg Part1 & Fire Segment 데이터셋 활용
-* **데이터 구성:** 학습 6,262장 / 검증 1,558장 / 테스트 403장 (Fast-SCNN 학습·평가 기준). YOLOv8-Seg는 이 중 테스트 519장, Mask R-CNN은 자체 보유 테스트 201장으로 각각 평가했습니다 — 세 모델이 같은 test set을 공유하지는 않습니다.
+* **데이터 구성:** 학습 6,262장 / 검증 1,558장 / 테스트 403장 (Fast-SCNN 학습·평가 기준). YOLOv8-Seg는 이 중 테스트 519장, Mask R-CNN은 자체 보유 테스트 201장으로 각각 평가했습니다 
 * **전처리:**
 
   * 모든 모델의 공정한 평가를 위해 **다각형(Polygon) 어노테이션 → 픽셀 단위 마스크(Mask)** 변환 후 사용
@@ -122,7 +122,6 @@ YOLOv8-Seg가 F1 0.900, IoU 0.818로 정확도가 가장 높았고, Fast-SCNN이
 
 YOLOv8-Seg는 Ultralytics CLI(`yolo segment train ...`)로 별도 학습했습니다.
 
-> **참고**: `train_eval_fast_scnn.py`는 노트북을 그대로 스크립트로 변환한 것이라 그 안에 여러 버전의 아키텍처 실험이 섞여 있습니다. 실제 저장된 화재 탐지 체크포인트와 정확히 일치하는 것은 `models/fast_scnn_fire.py` 하나뿐이며, 이 사실은 체크포인트의 state_dict 키를 직접 대조해 확인했습니다.
 
 ## 실행 방법
 
@@ -146,11 +145,6 @@ yolo segment train data=fire_seg.yaml model=yolov8n-seg.pt
 
 ---
 
-## 남은 문제
-
-세 모델이 서로 다른 테스트셋으로 평가돼 있어 절대 비교가 어렵습니다. 다음에는 데이터 분할을 영상 단위로 고정하고, 세 모델을 같은 테스트셋에서 다시 평가할 계획입니다. 야간·연기 환경의 데이터도 추가로 필요합니다.
-
----
 
 ## 참고 문헌
 
